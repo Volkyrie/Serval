@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.main-img {
+    width: 100wh;
+    height: 100vh;
+    background-image: url("../assets/941723.jpg");
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    object-fit: cover;
+} 
+
+.overlay {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    height: 20vh;
+    background-color: rgba(0, 255, 255, 0.418);
+    width: 100%;
+    padding: 20px 50px;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.controls {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    margin-right: 50px;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+.btns {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.btns button {
+    width: 28%;
+    margin: 5px;
+    padding: 5px 10px;
+}
+
+.btns button:hover {
+    cursor: pointer;
+}
+
+.compass-container {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 150px;
+}
+
+.compass {
+    max-width: 100%;
+    height: 100%;
+}
+
+.text {
+    width: 90%;
+    color: white;
+    font-size: 48px;
+    font-weight: bold;
+    text-decoration: underline;
+}
