@@ -10,7 +10,14 @@
     background-clip: border-box;
     background-repeat: no-repeat;
     object-fit: cover;
+    display: flex;
+    justify-content: center;
 } 
+
+.game {
+    object-fit: cover;
+    width: 100%;
+}
 
 .overlay {
     display: flex;

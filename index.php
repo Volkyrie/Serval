@@ -4,6 +4,9 @@
         require $classe . '.class.php';
     }
     spl_autoload_register('chargerClasse');
+
+    $player = new FirstPersonView();
+
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +19,7 @@
     <title>Projet Serval</title>
 </head>
 <body class="main-img">
+    <img class="game" src="<?php echo $player->getView(); ?>" alt="">
     <div class="compass-container">
         <img class="compass" src="./assets/compass.png" alt="compass">
     </div>
