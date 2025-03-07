@@ -21,18 +21,6 @@ class BaseClass {
         return $result;
     }
 
-    private function __currentMapId() {
-        $sql = "SELECT id FROM map WHERE coordx=:x AND coordy=:y AND direction=:angle";
-        $query = $this->_dbh->prepare($sql);
-        $query->bindParam(':y', $_currentY, PDO::PARAM_INT);
-        $query->bindParam(':x', $_currentX, PDO::PARAM_INT);
-        $query->bindParam(':angle', $_currentAngle, PDO::PARAM_INT);
-        $query->execute();
-        $newPos = $query->fetch(PDO::FETCH_OBJ);
-
-        return $newPos->id;
-    }
-
     public function getDbh() {
         return $this->_dbh;
     }
@@ -62,149 +50,204 @@ class BaseClass {
     }
 
     public function checkForward() {
-        if($_currentAngle  == 0) {
-            $x = $_currentX + 1;
-        } else if ($_currentAngle  == 90) {
-            $y = $_currentY + 1;
-        } else if ($_currentAngle  == 180) {
-            $x = $_currentX - 1;
+        if($this->_currentAngle  == 0) {
+            $x = $this->_currentX + 1;
+            $y = $this->_currentY;
+        } else if ($this->_currentAngle  == 90) {
+            $y = $this->_currentY + 1;
+            $x = $this->_currentX;
+        } else if ($this->_currentAngle  == 180) {
+            $x = $this->_currentX - 1;
+            $y = $this->_currentY;
         } else {
-            $y = $_currentY - 1;
+            $y = $this->_currentY - 1;
+            $x = $this->_currentX;
         }
 
-        $result = $this->__checkMove($x, $y, $_currentAngle);
+        $result = $this->__checkMove($x, $y, $this->_currentAngle);
         return $result;
     }
 
     public function checkBack() {
-        if($_currentAngle  == 0) {
-            $x = $_currentX - 1;
-        } else if ($_currentAngle  == 90) {
-            $y = $_currentY - 1;
-        } else if ($_currentAngle  == 180) {
-            $x = $_currentX + 1;
+        if($this->_currentAngle  == 0) {
+            $x = $this->_currentX - 1;
+            $y = $this->_currentY;
+        } else if ($this->_currentAngle  == 90) {
+            $y = $this->_currentY - 1;
+            $x = $this->_currentX;
+        } else if ($this->_currentAngle  == 180) {
+            $x = $this->_currentX + 1;
+            $y = $this->_currentY;
         } else {
-            $y = $_currentY + 1;
+            $y = $this->_currentY + 1;
+            $x = $this->_currentX;
         }
 
-        $result = $this->__checkMove($x, $y, $_currentAngle);
+        $result = $this->__checkMove($x, $y, $this->_currentAngle);
         return $result;
     }
 
     public function checkRight() {
-        if($_currentAngle  == 0) {
-            $y = $_currentY - 1;
-        } else if ($_currentAngle  == 90) {
-            $x = $_currentX + 1;
-        } else if ($_currentAngle  == 180) {
-            $y = $_currentY + 1;
+        if($this->_currentAngle  == 0) {
+            $y = $this->_currentY - 1;
+            $x = $this->_currentX;
+        } else if ($this->_currentAngle  == 90) {
+            $x = $this->_currentX + 1;
+            $y = $this->_currentY;
+        } else if ($this->_currentAngle  == 180) {
+            $y = $this->_currentY + 1;
+            $x = $this->_currentX;
         } else {
-            $x = $_currentX - 1;
+            $x = $this->_currentX - 1;
+            $y = $this->_currentY;
         }
-
-        $result = $this->__checkMove($x, $y, $_currentAngle);
+        $coord = $x . $y;
+        error_log(print_r($coord, 1));
+        $result = $this->__checkMove($x, $y, $this->_currentAngle);
         return $result;
     }
 
     public function checkLeft() {
-        if($_currentAngle  == 0) {
-            $y = $_currentX + 1;
-        } else if ($_currentAngle  == 90) {
-            $x = $_currentX - 1;
-        } else if ($_currentAngle  == 180) {
-            $y = $_currentY - 1;
+        if($this->_currentAngle  == 0) {
+            $y = $this->_currentY + 1;
+            $x = $this->_currentX;
+        } else if ($this->_currentAngle  == 90) {
+            $x = $this->_currentX - 1;
+            $y = $this->_currentY;
+        } else if ($this->_currentAngle  == 180) {
+            $y = $this->_currentY - 1;
+            $x = $this->_currentX;
         } else {
-            $x = $_currentX + 1;
+            $x = $this->_currentX + 1;
+            $y = $this->_currentY;
         }
 
-        $result = $this->__checkMove($x, $y, $_currentAngle);
+        $result = $this->__checkMove($x, $y, $this->_currentAngle);
         return $result;
     }
 
     public function checkTurnLeft() {
-        if($_currentAngle == 270) {
+        if($this->_currentAngle == 270) {
             $angle = 0;
         } else {
-            $angle = $_currentAngle + 90;
+            $angle = $this->_currentAngle + 90;
         }
 
-        $result = $this->__checkMove($_currentX, $_currentY, $angle);
+        $result = $this->__checkMove($this->_currentX, $this->_currentY, $angle);
         return $result;
     }
 
     public function checkTurnRight() {
-        if($_currentAngle == 0) {
+        if($this->_currentAngle == 0) {
             $angle = 270;
         } else {
-            $angle = $_currentAngle - 90;
+            $angle = $this->_currentAngle - 90;
         }
 
-        $result = $this->__checkMove($_currentX, $_currentY, $angle);
+        $result = $this->__checkMove($this->_currentX, $this->_currentY, $angle);
         return $result;
     }
 
     public function goForward() {
-        if($_currentAngle == 0) {
-            $this->setCurrentX($_currentX + 1);
-        } else if ($_currentAngle == 90) {
-            $this->setCurrentY($_currentY + 1);
-        } else if ($_currentAngle == 180) {
-            $this->setCurrentX($_currentX - 1);
+        $test = $this->checkForward();
+        if($test == 1) {
+            if($this->_currentAngle == 0) {
+                $this->setCurrentX($this->_currentX + 1);
+            } else if ($this->_currentAngle == 90) {
+                $this->setCurrentY($this->_currentY + 1);
+            } else if ($this->_currentAngle == 180) {
+                $this->setCurrentX($this->_currentX - 1);
+            } else {
+                $this->setCurrentY($this->_currentY - 1);
+            }
         } else {
-            $this->setCurrentY($_currentY - 1);
+            error_log('You cant move forward');
         }
     }
 
     public function goBack() {
-        if($_currentAngle == 0) {
-            $this->setCurrentX($_currentX - 1);
-        } else if ($_currentAngle == 90) {
-            $this->setCurrentY($_currentY - 1);
-        } else if ($_currentAngle == 180) {
-            $this->setCurrentX($_currentX + 1);
+        $test = $this->checkBack();
+        if($test == 1) {
+            if($this->_currentAngle == 0) {
+                $this->setCurrentX($this->_currentX - 1);
+            } else if ($this->_currentAngle == 90) {
+                $this->setCurrentY($this->_currentY - 1);
+            } else if ($this->_currentAngle == 180) {
+                $this->setCurrentX($this->_currentX + 1);
+            } else {
+                $this->setCurrentY($this->_currentY + 1);
+            }
         } else {
-            $this->setCurrentY($_currentY + 1);
-        }
+            error_log('You cant move backward');
+        }   
     }
 
     public function goRight() {
-        if($_currentAngle == 0) {
-            $this->setCurrentY($_currentY - 1);
-        } else if ($_currentAngle == 90) {
-            $this->setCurrentX($_currentX + 1);
-        } else if ($_currentAngle == 180) {
-            $this->setCurrentY($_currentY + 1);
-        } else {
-            $this->setCurrentX($_currentX - 1);
-        }
+        $test = $this->checkRight();
+        if($test == 1) {
+            if($this->_currentAngle == 0) {
+                $this->setCurrentY($this->_currentY - 1);
+            } else if ($this->_currentAngle == 90) {
+                $this->setCurrentX($this->_currentX + 1);
+            } else if ($this->_currentAngle == 180) {
+                $this->setCurrentY($this->_currentY + 1);
+            } else {
+                $this->setCurrentX($this->_currentX - 1);
+            }
+        }   else {
+            error_log('You cant move to the right');
+        } 
     }
 
     public function goLeft() {
-        if($_currentAngle == 0) {
-            $this->setCurrentY($_currentY + 1);
-        } else if ($_currentAngle == 90) {
-            $this->setCurrentX($_currentX - 1);
-        } else if ($_currentAngle == 180) {
-            $this->setCurrentY($_currentY - 1);
-        } else {
-            $this->setCurrentX($_currentX + 1);
+        $test = $this->checkLeft();
+        if($test == 1) {
+            if($this->_currentAngle == 0) {
+                $this->setCurrentY($this->_currentY + 1);
+            } else if ($this->_currentAngle == 90) {
+                $this->setCurrentX($this->_currentX - 1);
+            } else if ($this->_currentAngle == 180) {
+                $this->setCurrentY($this->_currentY - 1);
+            } else {
+                $this->setCurrentX($this->_currentX + 1);
+            }
+        }   else {
+            error_log('You cant move to the left');
         }
     }
 
     public function turnRight() {
-        if($_currentAngle == 0) {
-            $this->setCurrentAngle(270);
-        } else {
-            $this->setCurrentAngle($_currentAngle - 90);
+        $test = $this->checkTurnRight();
+        if($test == 1) {
+            if($this->_currentAngle == 0) {
+                $this->setCurrentAngle(270);
+            } else {
+                $this->setCurrentAngle($this->_currentAngle - 90);
+            }
+        }   else {
+            error_log('You cant turn right');
         }
     }
 
     public function turnLeft() {
-        if($_currentAngle == 270) {
-            $this->setCurrentAngle(0);
-        } else {
-            $this->setCurrentAngle($_currentAngle + 90);
+        $test = $this->checkTurnLeft();
+        if($test == 1) {
+            if($this->_currentAngle == 270) {
+                $this->setCurrentAngle(0);
+            } else {
+                $this->setCurrentAngle($this->_currentAngle + 90);
+            }
+        }   else {
+            error_log('You cant turn left');
         }
+    }
+
+    public function coord() {
+        $x = $this->getCurrentX();
+        $y = $this->getCurrentY();
+        $angle = $this->getCurrentAngle();
+        $test = $x . $y . $angle;
+        error_log(print_r($test, 1));
     }
 }
 ?>

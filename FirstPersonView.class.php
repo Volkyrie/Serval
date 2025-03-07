@@ -7,8 +7,12 @@ class FirstPersonView extends BaseClass {
         parent::__construct();
     }
 
-    public function setMapId() {
-        $this->_mapId = $this->__currentMapId();
+    public function getMapId() {
+        return $this->_mapId;
+    }
+
+    public function setMapId($id) {
+        $this->_mapId = $id;
     }
 
     private function __currentMapId() {
@@ -23,12 +27,12 @@ class FirstPersonView extends BaseClass {
         $query->bindParam(':angle', $angle, PDO::PARAM_INT);
         $query->execute();
         $newPos = $query->fetch(PDO::FETCH_OBJ);
-
-        return $newPos->id;
+        error_log(print_r($newPos, 1));
+        $this->setMapId($newPos->id);
     }
 
     public function getView() {
-        $this->setMapId();
+        $this->__currentMapId();
         $dbh = $this->getDbh();
         $sql = "SELECT images.path FROM images
                 JOIN map ON map.id=images.map_id
@@ -42,7 +46,8 @@ class FirstPersonView extends BaseClass {
     }
 
     public function getAnimCompass() {
-
+        $angle = $this->getCurrentAngle();
+        return $angle . "deg";
     }
 }
 ?>
