@@ -1,6 +1,5 @@
 <?php
-class FirstPersonView extends BaseClass {
-    private $_img = "./images/";
+class FirstPersonAction extends BaseClass {
     private $_mapId = 1;
 
     public function __construct() {
@@ -30,23 +29,42 @@ class FirstPersonView extends BaseClass {
         $this->setMapId($newPos->id);
     }
 
-    public function getView() {
+    public function checkAction() {
         $this->__currentMapId();
         $dbh = $this->getDbh();
-        $sql = "SELECT images.path FROM images
-                JOIN map ON map.id=images.map_id
+        $sql = "SELECT actions.id FROM actions 
+                JOIN map ON map.id=actions.map_id
+                WHERE actions.map_id=:map AND actions.status=0 AND map.status_action=0";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
+        $query->execute();
+        $view = $query->fetch(PDO::FETCH_OBJ);
+        if(isset($view->id)) {
+            $disable = " ";
+        } else {
+            $disable = "disabled";
+        }
+        
+        return $disable;
+    }
+
+    public function doAction() {
+        $this->__currentMapId();
+        $dbh = $this->getDbh();
+        $sql = "SELECT text.text FROM text
+                JOIN map ON map.id=text.map_id
                 WHERE map.id=:map";
         $query = $dbh->prepare($sql);
         $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
         $query->execute();
         $view = $query->fetch(PDO::FETCH_OBJ);
-        $path = $view->path;
-        return $this->_img . $path;
-    }
-
-    public function getAnimCompass() {
-        $angle = $this->getCurrentAngle();
-        return $angle . "deg";
+        if(isset($view->text)) {
+            $disable = "disabled";
+        } else {
+            $disable = "";
+        }
+        
+        return $disable;
     }
 }
 ?>

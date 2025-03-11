@@ -7,6 +7,7 @@
 
     $player = new FirstPersonView();
     $text = new FirstPersonText();
+    $actions = new FirstPersonAction();
     $player->coord();
     $text->coord();
 
@@ -22,25 +23,36 @@
         $text->setCurrentX($x);
         $text->setCurrentY($y);
         $text->setCurrentAngle($angle);
+        $actions->setCurrentX($x);
+        $actions->setCurrentY($y);
+        $actions->setCurrentAngle($angle);
 
         if($action == 'forward') {
             $player->goForward();
             $text->goForward();
+            $actions->goForward();
         } else if ($action == 'back'){
             $player->goBack();
             $text->goBack();
+            $actions->goBack();
         } else if ($action == 'right'){
             $player->goRight();
             $text->goRight();
+            $actions->goRight();
         } else if ($action == 'left'){
             $player->goLeft();
             $text->goLeft();
+            $actions->goLeft();
         } else if ($action == 'turnRight'){
             $player->turnRight();
             $text->turnRight();
+            $actions->turnRight();
         } else if ($action == 'turnLeft'){
             $player->turnLeft();
             $text->turnLeft();
+            $actions->turnLeft();
+        } else if ($action == 'action') {
+            $actions->doAction();
         } else {
             error_log('Erreur!', 0);
         }
@@ -76,7 +88,7 @@
                     <button onCLick="location.href='index.php?action=left&x=<?php echo $player->getCurrentX();?>&y=<?php echo $player->getCurrentY();?>&angle=<?php echo $player->getCurrentAngle();?>'">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <button>
+                    <button onCLick="location.href='index.php?action=action&x=<?php echo $player->getCurrentX();?>&y=<?php echo $player->getCurrentY();?>&angle=<?php echo $player->getCurrentAngle();?>'" <?php echo $actions->checkAction();?>>
                         <i class="fa-solid fa-hand-pointer"></i>
                     </button>
                     <button onCLick="location.href='index.php?action=right&x=<?php echo $player->getCurrentX();?>&y=<?php echo $player->getCurrentY();?>&angle=<?php echo $player->getCurrentAngle();?>'">
