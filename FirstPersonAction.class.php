@@ -51,20 +51,45 @@ class FirstPersonAction extends BaseClass {
     public function doAction() {
         $this->__currentMapId();
         $dbh = $this->getDbh();
-        $sql = "SELECT text.text FROM text
-                JOIN map ON map.id=text.map_id
-                WHERE map.id=:map";
+
+        $sql = "UPDATE actions SET status=1
+                WHERE map_id=:map";
         $query = $dbh->prepare($sql);
         $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
         $query->execute();
-        $view = $query->fetch(PDO::FETCH_OBJ);
-        if(isset($view->text)) {
-            $disable = "disabled";
+
+        $sql = "UPDATE map SET status_action=1
+                WHERE id=:map";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
+        $query->execute();
+
+        $sql = "UPDATE images SET status_action=1
+                WHERE map_id=:map
+                ORDER BY id ASC LIMIT 1";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
+        $query->execute();
+
+        $sql = "UPDATE text SET status_action=1
+                WHERE map_id=:map
+                ORDER BY id ASC LIMIT 1";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
+        $query->execute();
+
+        $sql = "SELECT items.description FROM items 
+                JOIN actions ON actions.item_id=items.id
+                WHERE actions.map_id=:map";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
+        $query->execute();
+        $obj = $query->fetch(PDO::FETCH_OBJ);
+        if($_SESSION['items'] == 0) {
+            $_SESSION['items'] = $obj->description;
         } else {
-            $disable = "";
+            $_SESSION['items'] = 0;
         }
-        
-        return $disable;
     }
 }
 ?>

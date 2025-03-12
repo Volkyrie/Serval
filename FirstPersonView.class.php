@@ -35,7 +35,7 @@ class FirstPersonView extends BaseClass {
         $dbh = $this->getDbh();
         $sql = "SELECT images.path FROM images
                 JOIN map ON map.id=images.map_id
-                WHERE map.id=:map";
+                WHERE map.id=:map AND images.status_action=0";
         $query = $dbh->prepare($sql);
         $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
         $query->execute();

@@ -20,14 +20,13 @@ class FirstPersonText extends BaseClass {
         $x = $this->getCurrentX();
         $angle = $this->getCurrentAngle();
 
-        $sql = "SELECT id FROM map WHERE coordx=:x AND coordy=:y AND direction=:angle";
+        $sql = "SELECT id FROM map WHERE coordx=:x AND coordy=:y AND direction=:angle AND status_action=0";
         $query = $this->getDbh()->prepare($sql);
         $query->bindParam(':y', $y, PDO::PARAM_INT);
         $query->bindParam(':x', $x, PDO::PARAM_INT);
         $query->bindParam(':angle', $angle, PDO::PARAM_INT);
         $query->execute();
         $newPos = $query->fetch(PDO::FETCH_OBJ);
-        error_log(print_r($newPos, 1));
         $this->setMapId($newPos->id);
     }
 

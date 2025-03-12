@@ -5,6 +5,8 @@
     }
     spl_autoload_register('chargerClasse');
 
+    session_start();
+    
     $player = new FirstPersonView();
     $text = new FirstPersonText();
     $actions = new FirstPersonAction();
