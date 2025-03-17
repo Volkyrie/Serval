@@ -10,8 +10,7 @@
     $player = new FirstPersonView();
     $text = new FirstPersonText();
     $actions = new FirstPersonAction();
-    $player->coord();
-    $text->coord();
+    $player->init();
 
     if(isset($_GET['action'])) {
         $action = $_GET['action'];

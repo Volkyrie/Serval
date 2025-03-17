@@ -20,7 +20,7 @@ class FirstPersonText extends BaseClass {
         $x = $this->getCurrentX();
         $angle = $this->getCurrentAngle();
 
-        $sql = "SELECT id FROM map WHERE coordx=:x AND coordy=:y AND direction=:angle AND status_action=0";
+        $sql = "SELECT id FROM map WHERE coordx=:x AND coordy=:y AND direction=:angle";
         $query = $this->getDbh()->prepare($sql);
         $query->bindParam(':y', $y, PDO::PARAM_INT);
         $query->bindParam(':x', $x, PDO::PARAM_INT);
@@ -35,7 +35,7 @@ class FirstPersonText extends BaseClass {
         $dbh = $this->getDbh();
         $sql = "SELECT text.text FROM text
                 JOIN map ON map.id=text.map_id
-                WHERE map.id=:map";
+                WHERE map.id=:map AND text.status_action=0";
         $query = $dbh->prepare($sql);
         $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
         $query->execute();

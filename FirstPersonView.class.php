@@ -1,6 +1,6 @@
 <?php
 class FirstPersonView extends BaseClass {
-    private $_img = "./images/";
+    CONST IMG = "./images/";
     private $_mapId = 1;
 
     public function __construct() {
@@ -41,7 +41,7 @@ class FirstPersonView extends BaseClass {
         $query->execute();
         $view = $query->fetch(PDO::FETCH_OBJ);
         $path = $view->path;
-        return $this->_img . $path;
+        return self::IMG . $path;
     }
 
     public function getAnimCompass() {

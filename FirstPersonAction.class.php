@@ -32,17 +32,34 @@ class FirstPersonAction extends BaseClass {
     public function checkAction() {
         $this->__currentMapId();
         $dbh = $this->getDbh();
-        $sql = "SELECT actions.id FROM actions 
+        $sql = "SELECT actions.requis FROM actions 
                 JOIN map ON map.id=actions.map_id
                 WHERE actions.map_id=:map AND actions.status=0 AND map.status_action=0";
         $query = $dbh->prepare($sql);
         $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
         $query->execute();
-        $view = $query->fetch(PDO::FETCH_OBJ);
-        if(isset($view->id)) {
-            $disable = " ";
+        $obj = $query->fetch(PDO::FETCH_OBJ);
+        if(isset($obj->requis)) {
+            $require = $obj->requis;
         } else {
+            $require = 0;
+        }
+
+        if($require == 1 && $_SESSION['items'] == 0) {
             $disable = "disabled";
+        } else {
+            $sql = "SELECT actions.id FROM actions 
+            JOIN map ON map.id=actions.map_id
+            WHERE actions.map_id=:map AND actions.status=0 AND map.status_action=0";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
+            $query->execute();
+            $view = $query->fetch(PDO::FETCH_OBJ);
+            if(isset($view->id)) {
+                $disable = " ";
+            } else {
+                $disable = "disabled";
+            }
         }
         
         return $disable;
@@ -85,7 +102,7 @@ class FirstPersonAction extends BaseClass {
         $query->bindParam(':map', $this->_mapId, PDO::PARAM_INT);
         $query->execute();
         $obj = $query->fetch(PDO::FETCH_OBJ);
-        if($_SESSION['items'] == 0) {
+        if(isset($_SESSION['items']) && ($_SESSION['items'] == 0)) {
             $_SESSION['items'] = $obj->description;
         } else {
             $_SESSION['items'] = 0;

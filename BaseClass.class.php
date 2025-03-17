@@ -21,6 +21,39 @@ class BaseClass {
         return $result;
     }
 
+    public function init() {
+        $y = 1;
+        $x = 0;
+        $angle = 180;
+
+        $sql = "SELECT id FROM map WHERE coordx=:x AND coordy=:y AND direction=:angle AND status_action=1";
+        $query = $this->_dbh->prepare($sql);
+        $query->bindParam(':y', $y, PDO::PARAM_INT);
+        $query->bindParam(':x', $x, PDO::PARAM_INT);
+        $query->bindParam(':angle', $angle, PDO::PARAM_INT);
+        $query->execute();
+        $reset = $query->fetch(PDO::FETCH_OBJ);
+        if(isset($reset->id) && ($reset->id == 3)) {
+            $_SESSION['items'] = 0;
+
+            $sql = "UPDATE actions SET status=0";
+            $query = $this->_dbh->prepare($sql);
+            $query->execute();
+
+            $sql = "UPDATE map SET status_action=0";
+            $query = $this->_dbh->prepare($sql);
+            $query->execute();
+
+            $sql = "UPDATE text SET status_action=0";
+            $query = $this->_dbh->prepare($sql);
+            $query->execute();
+
+            $sql = "UPDATE images SET status_action=0";
+            $query = $this->_dbh->prepare($sql);
+            $query->execute();
+        }
+    }
+
     public function getDbh() {
         return $this->_dbh;
     }
@@ -102,7 +135,6 @@ class BaseClass {
             $y = $this->_currentY;
         }
         $coord = $x . $y;
-        error_log(print_r($coord, 1));
         $result = $this->__checkMove($x, $y, $this->_currentAngle);
         return $result;
     }
@@ -240,14 +272,6 @@ class BaseClass {
         }   else {
             error_log('You cant turn left');
         }
-    }
-
-    public function coord() {
-        $x = $this->getCurrentX();
-        $y = $this->getCurrentY();
-        $angle = $this->getCurrentAngle();
-        $test = $x . $y . $angle;
-        error_log(print_r($test, 1));
     }
 }
 ?>
